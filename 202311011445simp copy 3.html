@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+
+<html>
+<title>canvas trial</title>
+
+<head>
+
+</head>
+
+<body>
+
+
+    <canvas id="tutorial" width="300" height="300">
+        你的浏览器不支持 canvas，请升级你的浏览器。
+    </canvas>
+    <button onclick="ff()">dd</button>
+</body>
+
+<script type="text/javascript">
+
+    function ff() {
+        // console.log("nut");
+        for (let index = 0; index < 100; index++) {
+
+            updt();
+        }
+        draw();
+        // console.log(arr[0]);
+
+    };
+    var N = 50;
+    var dt = 0.01;
+    var arr = [];
+    var darr = [];
+    var warea = { x: null, y: null, max: 20000 };
+    var canvas = document.getElementById('tutorial');
+    var LX = canvas.width;
+    var LY = canvas.height;
+    var dX = LX / N;
+    var dY = LY / N;
+
+    window.onload = function () {
+
+        for (let i = 0; i < N; i++) {
+            arr[i] = [];
+            darr[i] = [];
+
+            for (let j = 0; j < N; j++) {
+                arr[i][j] = 127 * Math.sin(2 * Math.PI * ((i) / N + (j) / (N))) + 128;
+                darr[i][j] = 0
+            }
+
+        }
+        var idd = setInterval(ff, 1);
+    };
+
+    function updt() {
+        for (let i = 1; i < N - 1; i++) {
+            for (let j = 1; j < N - 1; j++) {
+                darr[i][j] = (arr[i - 1][j] + arr[i][j - 1] + arr[i + 1][j] + arr[i][j + 1] - 4 * arr[i][j]) / 4;
+            }
+
+        }
+        for (let i = 1; i < N - 1; i++) {
+            arr[i][0] = 0;
+            arr[i][N - 1] = 0;
+        }
+        for (let j = 1; j < N - 1; j++) {
+            arr[0][j] = 0;
+            arr[N - 1][j] = 0;
+        }
+        arr[0][0] = 0;
+        arr[0][N - 1] = 0;
+        arr[N - 1][0] = 0;
+        arr[N - 1][N - 1] = 0;
+
+        for (let i = 0; i < N - 0; i++) {
+            for (let j = 0; j < N - 0; j++) {
+                arr[i][j] = arr[i][j] + darr[i][j] * dt;
+            }
+
+        }
+        if (0 < warea.x && warea.x < 300 && 0 < warea.y && warea.y < 300) {
+
+            arr[Math.floor((warea.x / LX) * N)][Math.floor((warea.y / LY) * N)] = 255
+        }
+        // console.log(darr[0])
+
+    };
+
+    function draw() {
+        var canvas = document.getElementById('tutorial');
+        if (!canvas.getContext) return;
+        var ctx = canvas.getContext("2d");
+
+
+        for (let i = 0; i < N; i++) {
+            for (let j = 0; j < N; j++) {
+                let temperature = arr[i][j]
+                let s = `RGB(${temperature},${temperature},${temperature})`;
+                ctx.fillStyle = s;
+                ctx.fillRect((i) * dX, (j) * dY, (1 + i) * dX, (1 + j) * dY);
+
+                // console.log(temperature);
+                // console.log(s);
+            }
+
+        }
+
+    };
+    var canvas = document.getElementById('tutorial');
+    var rect = canvas.getBoundingClientRect();
+    window.onmousemove = function (e) {
+        e = e || window.event;
+        warea.x = e.clientX - rect.left;
+        warea.y = e.clientY - rect.top;
+        console.log(warea)
+    };
+
+
+</script>
+
+
+</html>
